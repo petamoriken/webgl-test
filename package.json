@@ -1,0 +1,27 @@
+{
+  "private": true,
+  "name": "webgl-test",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "petamoriken <moriken@kimamass.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "babel-eslint": "^7.1.1",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-plugin-transform-strict-mode": "^6.22.0",
+    "babel-polyfill": "^6.23.0",
+    "babel-preset-latest": "^6.22.0",
+    "babel-register": "^6.23.0",
+    "babel-runtime": "^6.23.0",
+    "babelify": "^7.3.0",
+    "browserify": "^14.1.0",
+    "eslint": "^3.15.0",
+    "gl-matrix": "^2.3.2",
+    "gulp": "gulpjs/gulp#4.0",
+    "mkdirp": "^0.5.1"
+  },
+  "scripts": {
+    "build": "gulp",
+    "clean": "rm -rf build"
+  }
+}
