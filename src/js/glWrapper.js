@@ -1,4 +1,4 @@
-export function createProgram(gl, [vertexText, fragmentText]) {
+export function compileShaderAndLink(gl, [vertexText, fragmentText]) {
     
     // 頂点シェーダーのコンパイル
     const vs = gl.createShader(gl.VERTEX_SHADER);
@@ -27,6 +27,9 @@ export function createProgram(gl, [vertexText, fragmentText]) {
         console.error("link error");
         throw new Error(gl.getShaderInfoLog(fs));
     }
+
+    // リンクしたプログラムの使用
+    gl.useProgram(program);
 
     return program;
 }
