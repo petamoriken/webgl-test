@@ -1,32 +1,32 @@
-// polyfill
-require("babel-polyfill");
-
-const fs = require("fs");
+"use strict";
 
 const gulp = require("gulp");
-const mkdirp = require("mkdirp");
+const $ = require("gulp-load-plugins")();
 
-const browserify = require("browserify");
-const babelify = require("babelify");
+const $$ = require("rollup-load-plugins")();
 
-const babelrc = {
-	babelrc:    false,
-    presets:    ["latest"],
-	plugins:	["transform-runtime", "transform-strict-mode"]
-};
-
-gulp.task("js", async () => {
-    await new Promise((resolve, reject) => mkdirp("build/js", error => error ? reject(error) : resolve()));
-
-    return browserify("src/js/main.js")
-        .transform(babelify, babelrc)
-        .bundle()
-        .pipe(fs.createWriteStream("build/js/main.js"));
+gulp.task("js", () => {
+    return gulp.src("src/js/**.js")
+        .pipe($.plumber())
+        .pipe($.rollup({
+            allowRealFiles: true,
+            entry: "src/js/main.js",
+            format: "iife",
+            plugins: [
+                $$.nodeResolve(),
+                $$.commonjs()
+            ]
+        })).pipe(gulp.dest("build/js"));
 });
 
 gulp.task("cp", () => {
-    return gulp.src(["src/**", "!src/js/**"])
+    return gulp.src(["src/**", "!src/js/**"], { since: gulp.lastRun("cp") })
         .pipe(gulp.dest("build"));
+});
+
+gulp.task("watch", () => {
+    gulp.watch("src/js/**.js", gulp.series("js"));
+    gulp.watch(["src/**", "!src/js/**"], gulp.series("cp"));
 });
 
 gulp.task("default", gulp.parallel("js", "cp"));

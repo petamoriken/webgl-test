@@ -1,4 +1,4 @@
-import { mat4 } from "gl-matrix";
+import mat4 from "gl-matrix/src/gl-matrix/mat4";
 
 import { waitUntilAnimationFrame } from "./lib";
 import { compileShaderAndLink } from "./glWrapper";
