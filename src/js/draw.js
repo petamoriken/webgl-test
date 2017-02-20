@@ -17,10 +17,10 @@ export async function draw(gl, [vertex, fragment]) {
     const nLocation = gl.getAttribLocation(program, "normal");
 
     // 描画するバッファの読み込み(attribute)
-    const [vbuffer, nbuffer] = [gl.createBuffer(), gl.createBuffer()]; // 頂点座標バッファと法線ベクトルバッファ
-    gl.bindBuffer(gl.ARRAY_BUFFER, vbuffer);
+    const [vBuffer, nBuffer] = [gl.createBuffer(), gl.createBuffer()]; // 頂点座標バッファと法線ベクトルバッファ
+    gl.bindBuffer(gl.ARRAY_BUFFER, vBuffer);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-0.5, -0.5, 0, 0.5, -0.5, 0, 0.5, 0.5, 0]), gl.STATIC_DRAW);
-    gl.bindBuffer(gl.ARRAY_BUFFER, nbuffer);
+    gl.bindBuffer(gl.ARRAY_BUFFER, nBuffer);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([0, 0, 1, 0, 0, 1, 0, 0, 1]), gl.STATIC_DRAW);
 
     // 描画処理
@@ -50,11 +50,11 @@ export async function draw(gl, [vertex, fragment]) {
         }
 
         // attribute でバッファを送信
-        gl.bindBuffer(gl.ARRAY_BUFFER, vbuffer); // 頂点座標
+        gl.bindBuffer(gl.ARRAY_BUFFER, vBuffer); // 頂点座標
         gl.vertexAttribPointer(vLocation, 3, gl.FLOAT, false, 0, 0);
         gl.enableVertexAttribArray(vLocation);
         
-        gl.bindBuffer(gl.ARRAY_BUFFER, nbuffer); // 法線ベクトル
+        gl.bindBuffer(gl.ARRAY_BUFFER, nBuffer); // 法線ベクトル
         gl.vertexAttribPointer(nLocation, 3, gl.FLOAT, true, 0, 0);
         gl.enableVertexAttribArray(nLocation);
         
