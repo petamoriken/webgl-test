@@ -33,3 +33,34 @@ export function compileShaderAndLink(gl, [vertexText, fragmentText]) {
 
     return program;
 }
+
+export function createVertexBuffer(gl, f32array) {
+    // バッファオブジェクトの生成
+    var vbo = gl.createBuffer();
+    
+    // バッファをバインドする
+    gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
+    
+    // バッファにデータをセット
+    gl.bufferData(gl.ARRAY_BUFFER, f32array, gl.STATIC_DRAW);
+    
+    // バッファのバインドを無効化
+    gl.bindBuffer(gl.ARRAY_BUFFER, null);
+    
+    // 生成した VBO を返して終了
+    return vbo;
+}
+
+export function setAttribute(gl, vbo, location, size, type = gl.FLOAT, normalized = false, stride = 0, offset = 0) {
+    // バッファをバインドする
+    gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
+
+    // attribute 属性を有効にする
+    gl.enableVertexAttribArray(location);
+
+    // attribute 属性を登録
+    gl.vertexAttribPointer(location, size, type, normalized, stride, offset);
+
+    // バッファのバインドを無効化
+    gl.bindBuffer(gl.ARRAY_BUFFER, null);
+}
