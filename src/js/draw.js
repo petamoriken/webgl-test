@@ -1,17 +1,20 @@
 import mat4 from "gl-matrix/src/gl-matrix/mat4";
 
 import { waitUntilAnimationFrame } from "./lib";
-import { compileShaderAndLink, createVertexBuffer, setAttribute } from "./glWrapper";
+import glWrapper from "./glWrapper";
 
-export async function draw(gl, [vertex, fragment]) {
+export async function draw(gl, shaders) {
     // クリア色の指定
     gl.clearColor(0, 0, 0, 1);
 
     // 深度テストを有効化
     gl.enable(gl.DEPTH_TEST);
 
+    // メインシェーダーの取得
+    const { vertex, fragment } = shaders[0];
+
     // シェーダーからプログラムを取得
-    const program = compileShaderAndLink(gl, [vertex, fragment]);
+    const program = glWrapper.compileShaderAndLink(gl, {vertex, fragment});
     
     // uniform の Location を取得
     const pLocation = gl.getUniformLocation(program, "projectionMatrix");
@@ -22,8 +25,8 @@ export async function draw(gl, [vertex, fragment]) {
     const nLocation = gl.getAttribLocation(program, "normal");
 
     // Vertex Buffer Object(VBO) を作る
-    const vBuffer = createVertexBuffer(gl, Float32Array.of(-0.5, -0.5, 0, 0.5, -0.5, 0, 0.5, 0.5, 0));
-    const nBuffer = createVertexBuffer(gl, Float32Array.of(0, 0, 1, 0, 0, 1, 0, 0, 1));
+    const vBuffer = glWrapper.createVertexBuffer(gl, Float32Array.of(-0.5, -0.5, 0, 0.5, -0.5, 0, 0.5, 0.5, 0));
+    const nBuffer = glWrapper.createVertexBuffer(gl, Float32Array.of(0, 0, 1, 0, 0, 1, 0, 0, 1));
 
     // 描画処理
     const startTime = performance.now();
@@ -51,9 +54,9 @@ export async function draw(gl, [vertex, fragment]) {
         }
 
         // attribute でバッファを送信
-        setAttribute(gl, vBuffer, vLocation, 3);
-        setAttribute(gl, nBuffer, nLocation, 3);
-        
+        glWrapper.setAttribute(gl, vBuffer, vLocation, 3);
+        glWrapper.setAttribute(gl, nBuffer, nLocation, 3);
+
         // 今まで設定した内容で WebGL に送信
         gl.drawArrays(gl.TRIANGLES, 0, 3);
     }

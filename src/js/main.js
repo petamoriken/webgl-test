@@ -13,5 +13,5 @@ import { draw } from "./draw";
     const canvas = document.getElementById("canvas");
     const gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
     
-    draw(gl, [vertex, fragment]);
+    draw(gl, [{vertex, fragment}]);
 })();

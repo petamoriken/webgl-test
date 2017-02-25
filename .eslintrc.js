@@ -10,7 +10,8 @@ module.exports = {
     "commonjs": true
   },
   globals: {
-    Promise:  false,
+    Promise: false,
+    Symbol: false,
     Float32Array: false
   },
   // To give you an idea how to override rule options:
