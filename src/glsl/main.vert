@@ -3,7 +3,7 @@ precision mediump float;
 
 // 描画プリミティブごとに与えられる変数
 uniform mat4 projectionMatrix; // 錐台(frustum)変換行列
-uniform mat4 modelviewMatrix; // 平行起動回転行列
+uniform mat4 modelviewMatrix; // 移動回転行列
 
 // 頂点ごとに与えられる変数
 attribute vec3 vertex; // 頂点座標
