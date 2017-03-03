@@ -7,8 +7,10 @@ const glWrapper = {
      * @param {string} shader.vertex - GLSL Vertex Shader Text
      * @param {string} shader.fragment - GLSL Fragment Shader Text
      */
-    compileShaderAndLink(gl, {vertex, fragment}) {
-        
+    compileShaderAndLink(gl, shader) {
+        // シェーダーの取得
+        const {vertex, fragment} = shader;
+
         // 頂点シェーダーのコンパイル
         const vs = gl.createShader(gl.VERTEX_SHADER);
         gl.shaderSource(vs, vertex);

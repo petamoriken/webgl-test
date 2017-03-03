@@ -3,6 +3,11 @@ import mat4 from "gl-matrix/src/gl-matrix/mat4";
 import { waitUntilAnimationFrame } from "./lib";
 import glWrapper from "./glWrapper";
 
+/** 
+ * @method draw
+ * @param {WebGLRenderingContext} gl - WebGL Context
+ * @param {Object[]} shaders - GLSL Shader Object
+ */
 export async function draw(gl, shaders) {
     // クリア色の指定
     gl.clearColor(0, 0, 0, 1);
