@@ -26,8 +26,12 @@ export async function draw(gl, shaders) {
     const mvLocation = gl.getUniformLocation(program, "modelviewMatrix");
 
     // attribute の Location を取得
-    const vLocation = gl.getAttribLocation(program, "vertex");
-    const nLocation = gl.getAttribLocation(program, "normal");
+    const vLocation = gl.getAttribLocation(program, "vertex"); // 0
+    const nLocation = gl.getAttribLocation(program, "normal"); // 1
+
+    // 指定した attribute の Location のレジスタを有効にする
+    gl.enableVertexAttribArray(vLocation);
+    gl.enableVertexAttribArray(nLocation);
 
     // Vertex Buffer Object(VBO) を作る
     const vBuffer = glWrapper.createVertexBuffer(gl, Float32Array.of(-0.5, -0.5, 0, 0.5, -0.5, 0, 0.5, 0.5, 0));
@@ -58,11 +62,14 @@ export async function draw(gl, shaders) {
             gl.uniformMatrix4fv(mvLocation, false, mvMat);
         }
 
-        // attribute でバッファを送信
+        // attribute で VBO の指定
         glWrapper.setAttribute(gl, vBuffer, vLocation, 3);
         glWrapper.setAttribute(gl, nBuffer, nLocation, 3);
 
         // 今まで設定した内容で WebGL に送信
         gl.drawArrays(gl.TRIANGLES, 0, 3);
+
+        // キューの即時実行
+        gl.flush();
     }
 }

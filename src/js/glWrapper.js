@@ -82,9 +82,6 @@ const glWrapper = {
         // バッファをバインドする
         gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
 
-        // attribute 属性を有効にする
-        gl.enableVertexAttribArray(location);
-
         // attribute 属性を登録
         gl.vertexAttribPointer(location, size, type, normalized, stride, offset);
 
