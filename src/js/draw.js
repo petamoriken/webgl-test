@@ -39,6 +39,10 @@ export async function draw(gl, shaders) {
     const vBuffer = glWrapper.createVertexBuffer(Float32Array.of(-0.5, -0.5, 0, 0.5, -0.5, 0, 0.5, 0.5, 0));
     const nBuffer = glWrapper.createVertexBuffer(Float32Array.of(0, 0, 1, 0, 0, 1, 0, 0, 1));
 
+    // attribute で VBO の指定
+    glWrapper.setAttribute(vBuffer, vLocation, 3);
+    glWrapper.setAttribute(nBuffer, nLocation, 3);
+
     // 描画処理
     const startTime = performance.now();
     for(;;) {
@@ -63,10 +67,6 @@ export async function draw(gl, shaders) {
             gl.uniformMatrix4fv(pLocation, false, pMat);
             gl.uniformMatrix4fv(mvLocation, false, mvMat);
         }
-
-        // attribute で VBO の指定
-        glWrapper.setAttribute(vBuffer, vLocation, 3);
-        glWrapper.setAttribute(nBuffer, nLocation, 3);
 
         // 今まで設定した内容で WebGL に送信
         gl.drawArrays(gl.TRIANGLES, 0, 3);
