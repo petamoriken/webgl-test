@@ -10,6 +10,7 @@ module.exports = {
     "commonjs": true
   },
   globals: {
+    Set: false,
     Promise: false,
     Symbol: false,
     Float32Array: false

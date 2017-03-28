@@ -1,15 +1,26 @@
-const glWrapper = {
+export default class GLWrapper {
+
+    /**
+     * @param {WebGLRenderingContext} gl - WebGL Context
+     */
+    constructor(gl) {
+        this.context = gl;
+
+        /** @type {?Set<number>} */
+        this.attributeLocations = null;
+    }
 
     /**
      * @method glWrapper.compileShaderAndLink
-     * @param {WebGLRenderingContext} gl - WebGL Context
      * @param {Object} shader - GLSL Shader Object
      * @param {string} shader.vertex - GLSL Vertex Shader Text
      * @param {string} shader.fragment - GLSL Fragment Shader Text
      */
-    compileShaderAndLink(gl, shader) {
+    compileShaderAndLink(shader) {
+        const gl = this.context;
+
         // シェーダーの取得
-        const {vertex, fragment} = shader;
+        const { vertex, fragment } = shader;
 
         // 頂点シェーダーのコンパイル
         const vs = gl.createShader(gl.VERTEX_SHADER);
@@ -43,14 +54,15 @@ const glWrapper = {
         gl.useProgram(program);
 
         return program;
-    },
+    }
 
     /**
      * @method glWrapper.createVertexBuffer
-     * @param {WebGLRenderingContext} gl - WebGL Context
      * @param {Float32Array} f32array - Vertex Buffer Data
      */
-    createVertexBuffer(gl, f32array) {
+    createVertexBuffer(f32array) {
+        const gl = this.context;
+
         // バッファオブジェクトの生成
         var vbo = gl.createBuffer();
         
@@ -65,11 +77,43 @@ const glWrapper = {
         
         // 生成した VBO を返して終了
         return vbo;
-    },
+    }
+
+    /**
+     * @method glWrapper.enableAttribute
+     * @param {number[]} locations - Array of Attribute Locations
+     */
+    enableAttributes(locations) {
+        const gl = this.context;
+
+        const newSet = new Set(locations);
+        const oldSet = this.attributeLocations;
+
+        // 最初
+        if(oldSet === null) {
+            // 全ての必要なレジスタを有効化
+            for(let num of newSet) {
+                gl.enableVertexAttribArray(num);
+            }
+
+        // 二回目以降
+        } else {
+            // 必要なレジスタを有効化
+            for(let num of [...newSet].filter(val => !oldSet.has(val))) {
+                gl.enableVertexAttribArray(num);
+            }
+
+            // 不要なレジスタを無効化
+            for(let num of [...oldSet].filter(val => !newSet.has(val))) {
+                gl.disableVertexAttribArray(num);
+            }
+        }
+
+        this.attributeLocations = newSet;
+    }
 
     /**
      * @method glWrapper.setAttribute
-     * @param {WebGLRenderingContext} gl - WebGL Context
      * @param {WebGLBuffer} vbo - Vertex Buffer Object
      * @param {number} location - A GLuint specifying the index of the vertex attribute that is to be modified.
      * @param {number} size - A GLint specifying the number of components per vertex attribute. Must be 1, 2, 3, or 4.
@@ -78,7 +122,9 @@ const glWrapper = {
      * @param {number} stride - A GLsizei specifying the offset in bytes between the beginning of consecutive vertex attributes.
      * @param {number} offset - A GLintptr specifying an offset in bytes of the first component in the vertex attribute array. Must be a multiple of type.
      */
-    setAttribute(gl, vbo, location, size, type = gl.FLOAT, normalized = false, stride = 0, offset = 0) {
+    setAttribute(vbo, location, size, type = this.context.FLOAT, normalized = false, stride = 0, offset = 0) {
+        const gl = this.context;
+
         // バッファをバインドする
         gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
 
@@ -90,6 +136,4 @@ const glWrapper = {
     }
 }
 
-glWrapper[Symbol.toStringTag] = "glWrapper";
-
-export default glWrapper;
+GLWrapper[Symbol.toStringTag] = "GLWrapper";
