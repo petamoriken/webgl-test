@@ -22,7 +22,7 @@ export async function draw(gl, shaders) {
     const { vertex, fragment } = shaders[0];
 
     // シェーダーからプログラムを取得
-    const program = glWrapper.compileShaderAndLink({vertex, fragment});
+    const program = glWrapper.compileShaderAndLink(vertex, fragment);
     
     // uniform の Location を取得
     const pLocation = gl.getUniformLocation(program, "projectionMatrix");
