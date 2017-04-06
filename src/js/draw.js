@@ -9,13 +9,36 @@ import GLWrapper from "./GLWrapper";
  * @param {Object[]} shaders - GLSL Shader Object
  */
 export async function draw(gl, shaders) {
+    // 頂点データ
+    const vertexBuffer = Float32Array.of(
+        -0.5, 0.5, 0,
+        0.5, 0.5, 0,
+        -0.5, -0.5, 0,
+        0.5, -0.5, 0
+    );
+
+    // 各頂点の法線ベクトルデータ
+    const normalBuffer = Float32Array.of(
+        0, 0, 1,
+        0, 0, 1,
+        0, 0, 1,
+        0, 0, 1
+    );
+
+    // 頂点データ、法線ベクトルデータのインデックス
+    const indexBuffer = Uint16Array.of(
+        0, 1, 2,
+        3, 2, 1
+    );
+
     // glWrapper を作る
     const glWrapper = new GLWrapper(gl);
 
     // クリア色の指定
     gl.clearColor(0, 0, 0, 1);
 
-    // 深度テストを有効化
+    // カリング、深度テスト
+    //gl.enable(gl.CULL_FACE);
     gl.enable(gl.DEPTH_TEST);
 
     // メインシェーダーの取得
@@ -23,10 +46,6 @@ export async function draw(gl, shaders) {
 
     // シェーダーからプログラムを取得
     const program = glWrapper.compileShaderAndLink(vertex, fragment);
-    
-    // uniform の Location を取得
-    const pLocation = gl.getUniformLocation(program, "projectionMatrix");
-    const mvLocation = gl.getUniformLocation(program, "modelviewMatrix");
 
     // シェーダーに attribute を与える
     {
@@ -38,13 +57,23 @@ export async function draw(gl, shaders) {
         glWrapper.enableAttributes([vLocation, nLocation]);
 
         // Vertex Buffer Object(VBO) を作る
-        const vBuffer = glWrapper.createVertexBuffer(Float32Array.of(-0.5, -0.5, 0, 0.5, -0.5, 0, 0.5, 0.5, 0));
-        const nBuffer = glWrapper.createVertexBuffer(Float32Array.of(0, 0, 1, 0, 0, 1, 0, 0, 1));
+        const vBuffer = glWrapper.createVertexBuffer(vertexBuffer);
+        const nBuffer = glWrapper.createVertexBuffer(normalBuffer);
 
         // attribute で VBO の指定
         glWrapper.setAttribute(vBuffer, vLocation, 3);
         glWrapper.setAttribute(nBuffer, nLocation, 3);
+
+        // Index Buffer Object(IBO) を作る
+        const ibo = glWrapper.createIndexBuffer(indexBuffer);
+    
+        // IBO をバインドする
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ibo);
     }
+
+    // uniform の Location を取得
+    const pLocation = gl.getUniformLocation(program, "projectionMatrix");
+    const mvLocation = gl.getUniformLocation(program, "modelviewMatrix");
 
     // 描画処理
     const startTime = performance.now();
@@ -73,7 +102,7 @@ export async function draw(gl, shaders) {
                 gl.uniformMatrix4fv(mvLocation, false, mvMat);
 
                 // 今まで設定した内容で WebGL に送信
-                gl.drawArrays(gl.TRIANGLES, 0, 3);
+                gl.drawElements(gl.TRIANGLES, indexBuffer.length, gl.UNSIGNED_SHORT, 0);
             }
 
             // 二つ目
@@ -81,14 +110,14 @@ export async function draw(gl, shaders) {
                 // 移動回転行列                
                 const mvMat = mat4.create();
                 mat4.translate(mvMat, mvMat, [1, 0, -6]);
-                mat4.rotate(mvMat, mvMat, 0.002 * delta + Math.PI, [0, 1, 0]); // 軸 [0, 1, 0] で回転
+                mat4.rotate(mvMat, mvMat, 0.002 * delta, [0, 1, 0]); // 軸 [0, 1, 0] で回転
                 
                 // uniform で頂点シェーダに送信
                 gl.uniformMatrix4fv(pLocation, false, pMat);            
                 gl.uniformMatrix4fv(mvLocation, false, mvMat);
 
                 // 今まで設定した内容で WebGL に送信
-                gl.drawArrays(gl.TRIANGLES, 0, 3);
+                gl.drawElements(gl.TRIANGLES, indexBuffer.length, gl.UNSIGNED_SHORT, 0);
             }
         }
         // キューの即時実行

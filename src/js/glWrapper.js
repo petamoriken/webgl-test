@@ -11,7 +11,6 @@ export default class GLWrapper {
     }
 
     /**
-     * @method glWrapper.compileShaderAndLink
      * @param {Object} shader - GLSL Shader Object
      * @param {string} shader.vertex - GLSL Vertex Shader Text
      * @param {string} shader.fragment - GLSL Fragment Shader Text
@@ -54,7 +53,6 @@ export default class GLWrapper {
     }
 
     /**
-     * @method glWrapper.createVertexBuffer
      * @param {Float32Array} f32array - Vertex Buffer Data
      */
     createVertexBuffer(f32array) {
@@ -77,7 +75,28 @@ export default class GLWrapper {
     }
 
     /**
-     * @method glWrapper.enableAttribute
+     * @param {Int16Array} i16array - Index Buffer Data
+     */
+    createIndexBuffer(i16array) {
+        const gl = this.context;
+
+        // バッファオブジェクトの生成
+        var ibo = gl.createBuffer();
+
+        // バッファをバインドする
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ibo);
+
+        // バッファにデータをセット
+        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, i16array, gl.STATIC_DRAW);
+
+        // バッファのバインドを無効化
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
+
+        // 生成したIBOを返して終了
+        return ibo;
+    }
+
+    /**
      * @param {number[]} locations - Array of Attribute Locations
      */
     enableAttributes(locations) {
@@ -110,7 +129,6 @@ export default class GLWrapper {
     }
 
     /**
-     * @method glWrapper.setAttribute
      * @param {WebGLBuffer} vbo - Vertex Buffer Object
      * @param {number} location - A GLuint specifying the index of the vertex attribute that is to be modified.
      * @param {number} size - A GLint specifying the number of components per vertex attribute. Must be 1, 2, 3, or 4.

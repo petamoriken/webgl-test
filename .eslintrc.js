@@ -13,6 +13,7 @@ module.exports = {
     Set: false,
     Promise: false,
     Symbol: false,
+    Uint16Array: false,
     Float32Array: false
   },
   // To give you an idea how to override rule options:
